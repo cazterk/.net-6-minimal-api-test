@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ChurchSystem.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration["secretConnectionString"];
 ConfigureServices(builder.Services);
 
 builder.Services.AddTransient<ITitheService, TitheService>();

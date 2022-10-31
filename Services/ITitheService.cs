@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using ChurchSystem;
+using ChurchSystem.Models;
 
 
 public interface ITitheService

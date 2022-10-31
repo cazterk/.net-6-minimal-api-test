@@ -1,5 +1,7 @@
-namespace ChurchSystem;
-public class Children : Attendance
+namespace ChurchSystem.Models
 {
+    public class Children : Attendance
+    {
 
+    }
 }

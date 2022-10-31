@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace ChurchSystem;
+
 
 public class Attendance
 {
