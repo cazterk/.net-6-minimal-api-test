@@ -52,6 +52,14 @@ app.MapPut("/tithe", (Tithe tithe, ITitheService service) =>
     return Results.Ok(updatedTithe);
 });
 
+// app.MapDelete("/tithe", (int id, ITitheService service) =>
+// {
+
+//     var tithe = service.Delete(id);
+//     if (!tithe) return Results.BadRequest(" Something went wrong ");
+//     return Results.Ok(tithe);
+// });
+
 app.Run();
 
 
