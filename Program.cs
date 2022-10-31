@@ -18,13 +18,14 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+
 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
 
 
 // Api Endpoints
+// tithe endpoints
 app.MapPost("/tithe", (Tithe tithe, ITitheService service) =>
 {
     var result = service.Create(tithe);
@@ -33,9 +34,8 @@ app.MapPost("/tithe", (Tithe tithe, ITitheService service) =>
 
 app.MapGet("/tithe:{id}", (int id, ITitheService service) =>
 {
-    var tithe = service.Get(id)
-    ;
-    if (tithe is null) return Results.NotFound("Title not found");
+    var tithe = service.Get(id);
+    if (tithe is null) return Results.NotFound("Tithe not found");
     return Results.Ok(tithe);
 });
 
@@ -48,7 +48,7 @@ app.MapGet("/tithe", (ITitheService service) =>
 app.MapPut("/tithe", (Tithe tithe, ITitheService service) =>
 {
     var updatedTithe = service.Update(tithe);
-    if (updatedTithe is null) return Results.NotFound(" Title not found ");
+    if (updatedTithe is null) return Results.NotFound(" Tithe not found ");
     return Results.Ok(updatedTithe);
 });
 
@@ -60,12 +60,44 @@ app.MapPut("/tithe", (Tithe tithe, ITitheService service) =>
 //     return Results.Ok(tithe);
 // });
 
+//children endpoints
+app.MapPost("/children", (Children children, IChildrenService service) =>
+{
+    var result = service.Create(children);
+    return Results.Ok(result);
+
+});
+
+app.MapGet("/children:{id}", (int id, IChildrenService service) =>
+{
+    var children = service.Get(id);
+    if (children is null) return Results.NotFound("children attendance not found");
+    return Results.Ok(children);
+});
+
+app.MapGet("/children", (IChildrenService service) =>
+{
+    var children = service.List();
+    return Results.Ok(children);
+});
+
+app.MapPut("/children ", (int id, IChildrenService service) =>
+{
+    var children = service.Get(id);
+    if (children is null) return Results.NotFound(" Selected children attendance not found");
+    var updatedChildren = service.Update(id);
+    return Results.Ok(updatedChildren);
+});
+
+
+
 app.Run();
 
 
 void ConfigureServices(IServiceCollection services)
 {
     services.AddTransient<ITitheService, TitheService>();
+    services.AddTransient<IChildrenService, ChildrenService>();
     services.AddEntityFrameworkNpgsql()
                .AddDbContext<APIContext>(
                    opt => opt.UseNpgsql(connectionString));
