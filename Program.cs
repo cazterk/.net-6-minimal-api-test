@@ -118,6 +118,36 @@ app.MapPut("/youths:{id}", (int id, Youths youths, IYouthsService service) =>
     return Results.Ok(updatedYouths);
 });
 
+//adults endpoints
+app.MapPost("/adults", (Adults adults, IAdultsService service) =>
+{
+    var results = service.Create(adults);
+    return Results.Ok(results);
+});
+
+app.MapGet("/adults:{id}", (int id, IAdultsService service) =>
+{
+    var adults = service.Get(id);
+    if (adults is null) return Results.NotFound(" Selected adults attendance not found");
+    return Results.Ok(adults);
+
+});
+
+app.MapGet("/adults", (IAdultsService service) =>
+{
+    var adults = service.List();
+    return Results.Ok(adults);
+});
+
+app.MapPut("/adults:{id}", (int id, Adults adults, IAdultsService service) =>
+{
+
+    var updatedAdults = service.Update(id, adults);
+    if (updatedAdults is null) return Results.NotFound(" Selected adults attendance not found");
+    return Results.Ok(updatedAdults);
+});
+// end of endpoints //
+
 app.Run();
 
 
@@ -126,6 +156,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<ITitheService, TitheService>();
     services.AddTransient<IChildrenService, ChildrenService>();
     services.AddTransient<IYouthsService, YouthsService>();
+    services.AddTransient<IAdultsService, AdultsService>();
     services.AddEntityFrameworkNpgsql()
                .AddDbContext<APIContext>(
                    opt => opt.UseNpgsql(connectionString));
