@@ -40,14 +40,20 @@ public class TitheService : ITitheService
 
     }
 
-    public Tithe Update(Tithe tithe)
+    public Tithe Update(int id, Tithe tithe)
     {
-        var oldTithe = _context.Tithe.FirstOrDefault(o => o.Id == tithe.Id);
+        var oldTithe = _context.Tithe.FirstOrDefault(o => o.Id == id);
+        if (oldTithe is null) return null;
 
         oldTithe.CollectionedAmount = tithe.CollectionedAmount;
         oldTithe.MeetingType = tithe.MeetingType;
 
-        if (oldTithe is null) return null;
+        if (oldTithe != null)
+        {
+            _context.SaveChanges();
+
+        }
+
 
         return tithe;
 
