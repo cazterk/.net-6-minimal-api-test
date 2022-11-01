@@ -1,6 +1,7 @@
-using ChurchSystem.Models;
+using System;
+using System.Linq;
 using ChurchSystem;
-
+using ChurchSystem.Models;
 
 
 public class ChildrenService : IChildrenService
@@ -23,7 +24,7 @@ public class ChildrenService : IChildrenService
     {
         var children = _context.Children.FirstOrDefault(o => o.Id == id);
 
-        if (children is Children) return null;
+        if (children is null) return null;
         return children;
     }
 
@@ -33,12 +34,22 @@ public class ChildrenService : IChildrenService
         return children;
     }
 
-    public Children? Update(int id)
+    public Children? Update(int id, Children children)
     {
-        var children = _context.Children.FirstOrDefault(o => o.Id == id);
-        if (children is null) return null;
+        var oldChildren = _context.Children.FirstOrDefault(o => o.Id == id);
+        if (oldChildren is null) return null;
+
+        oldChildren.Brothers = children.Brothers;
+        oldChildren.Sisters = children.Sisters;
+        oldChildren.MeetingType = children.MeetingType;
+
+        if (oldChildren != null)
+        {
+            _context.SaveChanges();
+        }
 
         return children;
+
     }
 
 }

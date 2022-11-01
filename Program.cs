@@ -81,11 +81,11 @@ app.MapGet("/children", (IChildrenService service) =>
     return Results.Ok(children);
 });
 
-app.MapPut("/children ", (int id, IChildrenService service) =>
+app.MapPut("/children:{id}", (int id, Children children, IChildrenService service) =>
 {
-    var children = service.Get(id);
-    if (children is null) return Results.NotFound(" Selected children attendance not found");
-    var updatedChildren = service.Update(id);
+
+    var updatedChildren = service.Update(id, children);
+    if (updatedChildren is null) return Results.NotFound(" Selected children attendance not found");
     return Results.Ok(updatedChildren);
 });
 
