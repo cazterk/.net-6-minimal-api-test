@@ -19,10 +19,9 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 
-
+app.UseCors("CorsPolicy");
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
-
 
 // Api Endpoints
 // tithe endpoints
@@ -160,5 +159,13 @@ void ConfigureServices(IServiceCollection services)
     services.AddEntityFrameworkNpgsql()
                .AddDbContext<APIContext>(
                    opt => opt.UseNpgsql(connectionString));
+
+    services.AddCors(options =>
+     {
+         options.AddPolicy("CorsPolicy",
+             builder => builder.AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader());
+     });
 
 }
