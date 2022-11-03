@@ -10,4 +10,6 @@ public class Attendance
     public double Sisters { get; set; }
 
     public MeetingTypes MeetingType { get; set; }
+
+    public DateTime Date { get; set; }
 }
