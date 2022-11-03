@@ -11,5 +11,7 @@ public class Attendance
 
     public MeetingTypes MeetingType { get; set; }
 
-    public DateTime Date { get; set; }
+    [DataType(DataType.Date, ErrorMessage = "Date only")]
+    [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = false)]
+    public DateOnly Date { get; set; }
 }
