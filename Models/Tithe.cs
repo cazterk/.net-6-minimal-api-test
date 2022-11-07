@@ -8,7 +8,7 @@ namespace ChurchSystem.Models
         public int Id { get; set; }
         public MeetingTypes MeetingType { get; set; }
 
-        public double CollectionedAmount { get; set; }
+        public double CollectedAmount { get; set; }
 
         public DateTime Date { get; set; }
     }

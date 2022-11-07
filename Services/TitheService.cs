@@ -45,7 +45,7 @@ public class TitheService : ITitheService
         var oldTithe = _context.Tithe.FirstOrDefault(o => o.Id == id);
         if (oldTithe is null) return null;
 
-        oldTithe.CollectionedAmount = tithe.CollectionedAmount;
+        oldTithe.CollectedAmount = tithe.CollectedAmount;
         oldTithe.MeetingType = tithe.MeetingType;
 
         if (oldTithe != null)
