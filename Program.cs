@@ -31,7 +31,7 @@ app.MapPost("/tithe", (Tithe tithe, ITitheService service) =>
     return Results.Ok(result);
 });
 
-app.MapGet("/tithe:{id}", (int id, ITitheService service) =>
+app.MapGet("/tithe/{id}", (int id, ITitheService service) =>
 {
     var tithe = service.Get(id);
     if (tithe is null) return Results.NotFound("Tithe not found");
@@ -44,7 +44,7 @@ app.MapGet("/tithe", (ITitheService service) =>
     return Results.Ok(tithe);
 });
 
-app.MapPut("/tithe:{id}", (int id, Tithe tithe, ITitheService service) =>
+app.MapPut("/tithe/{id}", (int id, Tithe tithe, ITitheService service) =>
 {
     var updatedTithe = service.Update(id, tithe);
     if (updatedTithe is null) return Results.NotFound(" Tithe not found ");
@@ -67,7 +67,7 @@ app.MapPost("/children", (Children children, IChildrenService service) =>
 
 });
 
-app.MapGet("/children:{id}", (int id, IChildrenService service) =>
+app.MapGet("/children/{id}", (int id, IChildrenService service) =>
 {
     var children = service.Get(id);
     if (children is null) return Results.NotFound("Selected children attendance not found");
@@ -80,7 +80,7 @@ app.MapGet("/children", (IChildrenService service) =>
     return Results.Ok(children);
 });
 
-app.MapPut("/children:{id}", (int id, Children children, IChildrenService service) =>
+app.MapPut("/children/{id}", (int id, Children children, IChildrenService service) =>
 {
 
     var updatedChildren = service.Update(id, children);
@@ -96,7 +96,7 @@ app.MapPost("/youths", (Youths youths, IYouthsService service) =>
 
 });
 
-app.MapGet("/youths:{id}", (int id, IYouthsService service) =>
+app.MapGet("/youths/{id}", (int id, IYouthsService service) =>
 {
 
     var youths = service.Get(id);
@@ -110,7 +110,7 @@ app.MapGet("/youths", (IYouthsService service) =>
     return Results.Ok(youths);
 });
 
-app.MapPut("/youths:{id}", (int id, Youths youths, IYouthsService service) =>
+app.MapPut("/youths/{id}", (int id, Youths youths, IYouthsService service) =>
 {
     var updatedYouths = service.Update(id, youths);
     if (updatedYouths is null) return Results.NotFound(" Selected youths attendance not found");
@@ -124,7 +124,7 @@ app.MapPost("/adults", (Adults adults, IAdultsService service) =>
     return Results.Ok(results);
 });
 
-app.MapGet("/adults:{id}", (int id, IAdultsService service) =>
+app.MapGet("/adults/{id}", (int id, IAdultsService service) =>
 {
     var adults = service.Get(id);
     if (adults is null) return Results.NotFound(" Selected adults attendance not found");
@@ -138,7 +138,7 @@ app.MapGet("/adults", (IAdultsService service) =>
     return Results.Ok(adults);
 });
 
-app.MapPut("/adults:{id}", (int id, Adults adults, IAdultsService service) =>
+app.MapPut("/adults/{id}", (int id, Adults adults, IAdultsService service) =>
 {
 
     var updatedAdults = service.Update(id, adults);
