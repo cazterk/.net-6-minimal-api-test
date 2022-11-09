@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseCors("CorsPolicy");
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
