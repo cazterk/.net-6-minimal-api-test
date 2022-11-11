@@ -40,6 +40,7 @@ public class ChildrenService : IChildrenService
         oldChildren.Brothers = children.Brothers;
         oldChildren.Sisters = children.Sisters;
         oldChildren.MeetingType = children.MeetingType;
+        oldChildren.Date = children.Date;
 
         if (oldChildren != null)
         {

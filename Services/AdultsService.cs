@@ -39,6 +39,7 @@ public class AdultsService : IAdultsService
         oldAdults.Brothers = adults.Brothers;
         oldAdults.Sisters = adults.Sisters;
         oldAdults.MeetingType = adults.MeetingType;
+        oldAdults.Date = adults.Date;
 
         if (oldAdults != null)
         {

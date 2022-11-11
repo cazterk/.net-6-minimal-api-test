@@ -41,6 +41,7 @@ public class YouthsService : IYouthsService
         oldYouths.Brothers = youths.Brothers;
         oldYouths.Sisters = youths.Sisters;
         oldYouths.MeetingType = youths.MeetingType;
+        oldYouths.Date = youths.Date;
 
         if (oldYouths != null)
         {

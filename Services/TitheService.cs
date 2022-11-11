@@ -47,6 +47,7 @@ public class TitheService : ITitheService
 
         oldTithe.CollectedAmount = tithe.CollectedAmount;
         oldTithe.MeetingType = tithe.MeetingType;
+        oldTithe.Date = tithe.Date;
 
         if (oldTithe != null)
         {
