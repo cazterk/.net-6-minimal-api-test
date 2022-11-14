@@ -1,10 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+using System;
+
 namespace ChurchSystem.Models
 {
 
     public class User
     {
-        public int ID { get; set; }
+        [Key]
+        public Guid Id { get; set; }
         public string Username { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public string PasswordSalt { get; set; }
         public string EmailAddress { get; set; }
         public string Password { get; set; }
         public string GivenName { get; set; }
