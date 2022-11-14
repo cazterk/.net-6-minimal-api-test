@@ -1,16 +1,35 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using ChurchSystem.Models;
 
+//services
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["secretConnectionString"];
 ConfigureServices(builder.Services);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateActor = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
 
+        };
+    });
 
+builder.Services.AddAuthorization();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Church API", Version = "v1" });
@@ -22,8 +41,33 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseCors("CorsPolicy");
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
+app.UseAuthorization();
+app.UseAuthentication();
+void ConfigureServices(IServiceCollection services)
+{
+    services.AddTransient<ITitheService, TitheService>();
+    services.AddTransient<IChildrenService, ChildrenService>();
+    services.AddTransient<IYouthsService, YouthsService>();
+    services.AddTransient<IAdultsService, AdultsService>();
+    services.AddTransient<IUserService, UserService>();
+    services.AddEntityFrameworkNpgsql()
+                 .AddDbContext<APIContext>(
+                     opt => opt.UseNpgsql(connectionString));
+
+    services.AddCors(options =>
+     {
+         options.AddPolicy("CorsPolicy",
+             builder => builder.AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader());
+     });
+
+}
 
 // Api Endpoints
+// authentication endpoints
+app.MapPost("/logins", (UserLogin user, IUserService service) => Login(user, service));
+
 // tithe endpoints
 app.MapPost("/tithe", (Tithe tithe, ITitheService service) =>
 {
@@ -145,27 +189,43 @@ app.MapPut("/adults/{id}", (int id, Adults adults, IAdultsService service) =>
     if (updatedAdults is null) return Results.NotFound(" Selected adults attendance not found");
     return Results.Ok(updatedAdults);
 });
+
 // end of endpoints //
+IResult Login(UserLogin user, IUserService service)
+{
+    if (!string.IsNullOrEmpty(user.Username) &&
+     !string.IsNullOrEmpty(user.Password)) ;
+
+    {
+        var loggedInUser = service.Get(user);
+        if (loggedInUser is null) return Results.NotFound("User not found");
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, loggedInUser.Username),
+            new Claim(ClaimTypes.Email, loggedInUser.EmailAddress),
+            new  Claim(ClaimTypes.GivenName, loggedInUser.GivenName ),
+            new Claim(ClaimTypes.Surname, loggedInUser.Surname),
+            new Claim(ClaimTypes.Role, loggedInUser.Role),
+
+        };
+        var token = new JwtSecurityToken
+        (
+            issuer: builder.Configuration["jwt:Issuer"],
+            audience: builder.Configuration["jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(1),
+            notBefore: DateTime.UtcNow,
+            signingCredentials: new SigningCredentials(
+                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:Key"])),
+                 SecurityAlgorithms.HmacSha256)
+
+        );
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        return Results.Ok(tokenString);
+    }
+}
 
 app.Run();
 
 
-void ConfigureServices(IServiceCollection services)
-{
-    services.AddTransient<ITitheService, TitheService>();
-    services.AddTransient<IChildrenService, ChildrenService>();
-    services.AddTransient<IYouthsService, YouthsService>();
-    services.AddTransient<IAdultsService, AdultsService>();
-    services.AddEntityFrameworkNpgsql()
-               .AddDbContext<APIContext>(
-                   opt => opt.UseNpgsql(connectionString));
-
-    services.AddCors(options =>
-     {
-         options.AddPolicy("CorsPolicy",
-             builder => builder.AllowAnyOrigin()
-                 .AllowAnyMethod()
-                 .AllowAnyHeader());
-     });
-
-}

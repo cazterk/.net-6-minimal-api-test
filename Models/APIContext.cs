@@ -11,5 +11,7 @@ namespace ChurchSystem.Models
         public DbSet<Youths> Youths => Set<Youths>();
         public DbSet<Children> Children => Set<Children>();
         public DbSet<Tithe> Tithe => Set<Tithe>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<UserLogin> UsersLogin => Set<UserLogin>();
     }
 }
