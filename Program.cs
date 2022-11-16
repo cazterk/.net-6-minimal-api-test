@@ -8,6 +8,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ChurchSystem.Models;
+using ChurchSystem.Services;
+
 
 //services
 var builder = WebApplication.CreateBuilder(args);
@@ -74,7 +76,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<IChildrenService, ChildrenService>();
     services.AddTransient<IYouthsService, YouthsService>();
     services.AddTransient<IAdultsService, AdultsService>();
-    services.AddTransient<IUserService, UserService>();
+    services.AddTransient<IAuthService, AuthService>();
     services.AddEntityFrameworkNpgsql()
                  .AddDbContext<APIContext>(
                      opt => opt.UseNpgsql(connectionString));
@@ -91,15 +93,11 @@ void ConfigureServices(IServiceCollection services)
 
 // Api Endpoints
 // authentication endpoints
-app.MapPost("/login", (UserLogin user, IUserService service) => Login(user, service));
+app.MapPost("/register", (UserRegistration user, IAuthService service) => Register(user, service));
+app.MapPost("/login", (UserLogin user, IAuthService service) => Login(user, service));
 
 // tithe endpoints
-app.MapPost("/register", (User user, IUserService service) =>
-{
-    var result = service.Register(user);
-    return Results.Ok(result);
 
-});
 app.MapPost("/tithe", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (Tithe tithe, ITitheService service) =>
 {
@@ -238,39 +236,46 @@ app.MapPut("/adults/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.
 });
 
 // end of endpoints //
-IResult Login(UserLogin user, IUserService service)
+async Task<IResult> Login(UserLogin user, IAuthService service)
 {
-    if (!string.IsNullOrEmpty(user.Username) &&
-     !string.IsNullOrEmpty(user.Password)) ;
+    if (string.IsNullOrEmpty(user.UserName))
 
     {
-        var loggedInUser = service.Get(user);
-        if (loggedInUser is null) return Results.NotFound("User not found");
-
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, loggedInUser.Username),
-            new Claim(ClaimTypes.Email, loggedInUser.EmailAddress),
-            new  Claim(ClaimTypes.GivenName, loggedInUser.GivenName ),
-            new Claim(ClaimTypes.Surname, loggedInUser.Surname),
-            new Claim(ClaimTypes.Role, loggedInUser.Role),
-
-        };
-        var token = new JwtSecurityToken
-        (
-            issuer: builder.Configuration["jwt:Issuer"],
-            audience: builder.Configuration["jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(1),
-            notBefore: DateTime.UtcNow,
-            signingCredentials: new SigningCredentials(
-                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:Key"])),
-                 SecurityAlgorithms.HmacSha256)
-
-        );
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-        return Results.Ok(tokenString);
+        return Results.BadRequest(new { message = "Email is incorrect" });
     }
+    else if (string.IsNullOrEmpty(user.Password))
+    {
+        return Results.BadRequest(new { message = "Password is incorrect" });
+    }
+
+    User loggedInUser = await service.Login(user.UserName, user.Password);
+
+    if (loggedInUser != null) return Results.Ok(loggedInUser);
+
+    return Results.BadRequest(new { message = "User login failed" });
+}
+
+async Task<IResult> Register(UserRegistration user, IAuthService service)
+{
+    if (string.IsNullOrEmpty(user.Name))
+    {
+        return Results.BadRequest(new { message = "Name needs to be provided" });
+    }
+    else if (string.IsNullOrEmpty(user.UserName))
+    {
+        return Results.BadRequest(new { message = "User name needs to be provided" });
+    }
+    else if (string.IsNullOrEmpty(user.Password))
+    {
+        return Results.BadRequest(new { message = "Password needs to be provided" });
+    }
+
+    User userToRegister = new(user.UserName, user.Name, user.Password, user.Role);
+    User registeredUser = await service.Register(userToRegister);
+    User loggedInUser = await service.Login(registeredUser.UserName, user.Password);
+
+    if (loggedInUser != null) return Results.Ok(loggedInUser);
+    return Results.BadRequest(new { message = "User registration failed" });
 }
 
 app.Run();

@@ -94,17 +94,15 @@ namespace ChurchSystem.Migrations
                     b.ToTable("Tithe");
                 });
 
-            modelBuilder.Entity("ChurchSystem.Models.Users", b =>
+            modelBuilder.Entity("ChurchSystem.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
+                    b.Property<string>("UserName")
                         .HasColumnType("text");
 
-                    b.Property<string>("GivenName")
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -116,17 +114,13 @@ namespace ChurchSystem.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Surname")
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.HasKey("UserName");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("ChurchSystem.Models.Youths", b =>
