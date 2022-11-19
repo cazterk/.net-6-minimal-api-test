@@ -45,7 +45,7 @@ namespace ChurchSystem.Services
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 IssuedAt = DateTime.UtcNow,
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 Issuer = _configuration["jwt:Issuer"],
                 Audience = _configuration["jwt:Audience"],
                 SigningCredentials = new SigningCredentials(
