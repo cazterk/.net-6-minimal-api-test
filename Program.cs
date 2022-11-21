@@ -7,13 +7,14 @@ using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System;
 using ChurchSystem.Models;
 using ChurchSystem.Services;
 
 
 //services
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration["secretConnectionString"];
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 ConfigureServices(builder.Services);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 
@@ -93,19 +94,19 @@ void ConfigureServices(IServiceCollection services)
 
 // Api Endpoints
 // authentication endpoints
-app.MapPost("/register", (UserRegistration user, IAuthService service) => Register(user, service));
-app.MapPost("/login", (UserLogin user, IAuthService service) => Login(user, service));
+app.MapPost("/api/register", (UserRegistration user, IAuthService service) => Register(user, service));
+app.MapPost("/api/login", (UserLogin user, IAuthService service) => Login(user, service));
 
 // tithe endpoints
 
-app.MapPost("/tithe", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPost("/api/tithe", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (Tithe tithe, ITitheService service) =>
 {
     var result = service.Create(tithe);
     return Results.Ok(result);
 });
 
-app.MapGet("/tithe/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/tithe/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, ITitheService service) =>
 {
     var tithe = service.Get(id);
@@ -113,14 +114,14 @@ app.MapGet("/tithe/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.A
     return Results.Ok(tithe);
 });
 
-app.MapGet("/tithe", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/tithe", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (ITitheService service) =>
 {
     var tithe = service.List();
     return Results.Ok(tithe);
 });
 
-app.MapPut("/tithe/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPut("/api/tithe/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, Tithe tithe, ITitheService service) =>
 {
     var updatedTithe = service.Update(id, tithe);
@@ -137,7 +138,7 @@ app.MapPut("/tithe/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.A
 // });
 
 //children endpoints
-app.MapPost("/children", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPost("/api/children", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (Children children, IChildrenService service) =>
 {
     var result = service.Create(children);
@@ -145,7 +146,7 @@ app.MapPost("/children", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Au
 
 });
 
-app.MapGet("/children/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/children/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, IChildrenService service) =>
 {
     var children = service.Get(id);
@@ -153,14 +154,14 @@ app.MapGet("/children/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefault
     return Results.Ok(children);
 });
 
-app.MapGet("/children", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/children", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (IChildrenService service) =>
 {
     var children = service.List();
     return Results.Ok(children);
 });
 
-app.MapPut("/children/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPut("/api/children/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, Children children, IChildrenService service) =>
 {
 
@@ -170,7 +171,7 @@ app.MapPut("/children/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefault
 });
 
 //youths endpoints
-app.MapPost("/youths", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPost("/api/youths", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (Youths youths, IYouthsService service) =>
 {
     var result = service.Create(youths);
@@ -178,7 +179,7 @@ app.MapPost("/youths", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 
 });
 
-app.MapGet("/youths/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/youths/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, IYouthsService service) =>
 {
 
@@ -187,14 +188,14 @@ app.MapGet("/youths/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.
     return Results.Ok(youths);
 });
 
-app.MapGet("/youths", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/youths", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (IYouthsService service) =>
 {
     var youths = service.List();
     return Results.Ok(youths);
 });
 
-app.MapPut("/youths/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPut("/api/youths/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, Youths youths, IYouthsService service) =>
 {
     var updatedYouths = service.Update(id, youths);
@@ -203,14 +204,14 @@ app.MapPut("/youths/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.
 });
 
 //adults endpoints
-app.MapPost("/adults", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPost("/api/adults", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (Adults adults, IAdultsService service) =>
 {
     var results = service.Create(adults);
     return Results.Ok(results);
 });
 
-app.MapGet("/adults/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/adults/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, IAdultsService service) =>
 {
     var adults = service.Get(id);
@@ -219,14 +220,14 @@ app.MapGet("/adults/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.
 
 });
 
-app.MapGet("/adults", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapGet("/api/adults", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (IAdultsService service) =>
 {
     var adults = service.List();
     return Results.Ok(adults);
 });
 
-app.MapPut("/adults/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+app.MapPut("/api/adults/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 (int id, Adults adults, IAdultsService service) =>
 {
 

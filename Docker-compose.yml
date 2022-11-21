@@ -1,0 +1,38 @@
+version: '3.8'
+
+networks:
+    dclm-network:
+        driver: bridge
+
+services:
+  dockerdclm-api:
+    image: caz-dev/church-system
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    networks:
+      - dclm-network
+    environment:
+      DB_CONNECTION_STRING: “host=postgres_image;port=5433;database=dclmdb;username=dcmlAdmin;password=1234; server="dclm"
+    depends_on:
+      - postgres_image
+    command: ["dotnet", "ef", "database update"]
+
+  postgres_image:
+    image: postgres:latest
+    ports:
+     - "5433"
+    restart: always
+    volumes: 
+      - db_volume:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
+    environment:
+      POSTGRES_USER: "dcmlAdmin"
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: "dclmdb"
+    networks:
+    - dclm-network
+volumes:
+  db_volume:
