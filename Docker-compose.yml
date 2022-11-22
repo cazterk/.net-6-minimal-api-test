@@ -15,24 +15,50 @@ services:
     networks:
       - dclm-network
     environment:
-      DB_CONNECTION_STRING: “host=postgres_image;port=5433;database=dclmdb;username=dcmlAdmin;password=1234; server="dclm"
+      DBServer: "database"
+      DBPort: "5432"
+      Database: "dclmdb2"
+      Password: "1234"
+      DBUser: "admin"
     depends_on:
-      - postgres_image
-    command: ["dotnet", "ef", "database update"]
+      - database
+    
 
-  postgres_image:
+  database:
     image: postgres:latest
+    container_name: db
     ports:
-     - "5433"
+     - 5432:5432
     restart: always
     volumes: 
       - db_volume:/var/lib/postgresql/data
-      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
     environment:
-      POSTGRES_USER: "dcmlAdmin"
-      POSTGRES_PASSWORD: "1234"
-      POSTGRES_DB: "dclmdb"
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
+      
+      
+      
     networks:
     - dclm-network
+  
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    networks:
+      - dclm-network
+    restart: unless-stopped
+    depends_on:
+      - database
+
 volumes:
   db_volume:
+  pgadmin:

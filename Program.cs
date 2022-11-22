@@ -14,7 +14,13 @@ using ChurchSystem.Services;
 
 //services
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+var server = builder.Configuration["DBServer"] ?? "";
+var port = builder.Configuration["DBPort"] ?? "";
+var database = builder.Configuration["Database"] ?? "";
+var password = builder.Configuration["Password"] ?? "";
+var user = builder.Configuration["DBUser"] ?? "";
+
+var DbConnectionString = $"Server={server}, {port}; User ID={user}; Password={password}; Database={database};";
 ConfigureServices(builder.Services);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 
@@ -71,6 +77,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
 app.UseAuthorization();
 app.UseAuthentication();
+DatabaseService.MigrationInitialization(app);
 void ConfigureServices(IServiceCollection services)
 {
     services.AddTransient<ITitheService, TitheService>();
@@ -80,7 +87,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<IAuthService, AuthService>();
     services.AddEntityFrameworkNpgsql()
                  .AddDbContext<APIContext>(
-                     opt => opt.UseNpgsql(connectionString));
+                     opt => opt.UseNpgsql(DbConnectionString));
 
     services.AddCors(options =>
      {
