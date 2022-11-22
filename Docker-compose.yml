@@ -3,7 +3,6 @@ version: '3.8'
 networks:
     dclm-network:
         driver: bridge
-
 services:
   dockerdclm-api:
     image: caz-dev/church-system
@@ -21,8 +20,7 @@ services:
       Password: "1234"
       DBUser: "admin"
     depends_on:
-      - database
-    
+      - database    
 
   database:
     image: postgres:latest
@@ -34,10 +32,7 @@ services:
       - db_volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
-      
-      
-      
+      POSTGRES_PASSWORD: 1234   
     networks:
     - dclm-network
   
