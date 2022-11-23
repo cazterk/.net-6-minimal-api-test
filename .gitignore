@@ -456,3 +456,6 @@ $RECYCLE.BIN/
 ## folders
 bin/
 obj/
+
+## environment variables
+.env

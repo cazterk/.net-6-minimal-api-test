@@ -14,11 +14,11 @@ services:
     networks:
       - dclm-network
     environment:
-      DBServer: "database"
-      DBPort: "5432"
-      Database: "dclmdb2"
-      Password: "1234"
-      DBUser: "admin"
+      DBServer: "${DBServer}"
+      DBPort: "${DBPort}"
+      Database: "${Database}"
+      Password: "${Password}"
+      DBUser: "${DBUser}"
     depends_on:
       - database    
 
