@@ -32,7 +32,7 @@ services:
       - db_volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234   
+      POSTGRES_PASSWORD: "${Password}"   
     networks:
     - dclm-network
   
