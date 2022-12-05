@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 networks:
-    dclm-network:
-        driver: bridge
+  dclm-network:
+    driver: bridge
 services:
   dockerdclm-api:
     image: caz-dev/church-system
@@ -20,22 +20,22 @@ services:
       Password: "${Password}"
       DBUser: "${DBUser}"
     depends_on:
-      - database    
+      - database
 
   database:
     image: postgres:latest
     container_name: db
     ports:
-     - 5432:5432
+      - 5432:5432
     restart: always
-    volumes: 
+    volumes:
       - db_volume:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: "${Password}"   
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: "${Password}"
     networks:
-    - dclm-network
-  
+      - dclm-network
+
   pgadmin:
     image: dpage/pgadmin4:latest
     environment:
