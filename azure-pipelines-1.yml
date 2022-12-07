@@ -1,0 +1,44 @@
+# Docker
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
+    azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
+    dockerComposeFile: '**/docker-compose.yml'
+    dockerComposeFileArgs: |
+      DB_PORT=5432
+      DATABASE=dclmdb
+      PASSWORD=3WfJdR49r$TyPcUL
+      DB_USER=admin
+      POSTGRES_USER=admin
+      DB_SERVER=database
+    action: 'Run a Docker Compose command'
+    dockerComposeCommand: 'docker-compose up --build'
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: |
+          $(tag)
