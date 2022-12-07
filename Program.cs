@@ -14,11 +14,11 @@ using ChurchSystem.Services;
 
 //services
 var builder = WebApplication.CreateBuilder(args);
-var server = builder.Configuration["DBServer"] ?? "";
-var port = builder.Configuration["DBPort"] ?? "";
-var database = builder.Configuration["Database"] ?? "";
-var password = builder.Configuration["Password"] ?? "";
-var user = builder.Configuration["DBUser"] ?? "";
+var server = builder.Configuration["DB_SERVER"] ?? "";
+var port = builder.Configuration["DB_PORT"] ?? "";
+var database = builder.Configuration["DATABASE"] ?? "";
+var password = builder.Configuration["PASSWORD"] ?? "";
+var user = builder.Configuration["DB_USER"] ?? "";
 
 var DbConnectionString = $"Server={server}, {port}; User ID={user}; Password={password}; Database={database};";
 ConfigureServices(builder.Services);
