@@ -1,0 +1,59 @@
+version: "3.3"
+
+networks:
+  dclm-network:
+    driver: bridge
+services:
+  dockerdclm-api:
+    image: caz-dev/church-system
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    networks:
+      - dclm-network
+    environment:
+      DBServer: "${DBServer}"
+      DBPort: "${DB_PORT}"
+      Database: "${DATABASE}"
+      Password: "${PASSWORD}"
+      DBUser: "${DB_USER}"
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    container_name: db
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: "${PASSWORD}"
+    networks:
+      - dclm-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: "${Password}"
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    networks:
+      - dclm-network
+    restart: always
+    depends_on:
+      - database
+
+volumes:
+  db_volume:
+  pgadmin:
