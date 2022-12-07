@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --file docker-compose.yml -o pac/k8s/net --volumes
+      hostPath
+    kompose.version: 1.17.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dockerdclm-api
+  name: dockerdclm-api
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: dockerdclm-api
+    spec:
+      containers:
+      - env:
+        - name: DBPort
+        - name: DBServer
+        - name: DBUser
+        - name: Database
+        - name: Password
+        image: caz-dev/church-system
+        name: dockerdclm-api
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+status: {}

@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 
 networks:
   dclm-network:
@@ -15,10 +15,10 @@ services:
       - dclm-network
     environment:
       DBServer: "${DBServer}"
-      DBPort: "${DBPort}"
-      Database: "${Database}"
-      Password: "${Password}"
-      DBUser: "${DBUser}"
+      DBPort: "${DB_PORT}"
+      Database: "${DATABASE}"
+      Password: "${PASSWORD}"
+      DBUser: "${DB_USER}"
     depends_on:
       - database
 
@@ -32,7 +32,7 @@ services:
       - db_volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: "${Password}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
     networks:
       - dclm-network
 
@@ -40,7 +40,7 @@ services:
     image: dpage/pgadmin4:latest
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_PASSWORD: "${Password}"
       PGADMIN_LISTEN_PORT: 5050
       PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
@@ -50,7 +50,7 @@ services:
       - 5050:5050
     networks:
       - dclm-network
-    restart: unless-stopped
+    restart: always
     depends_on:
       - database
 
