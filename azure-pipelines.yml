@@ -4,11 +4,4 @@
     azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
     azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
     dockerComposeFile: '**/docker-compose.yml'
-    dockerComposeFileArgs: |
-      DB_PORT=5432
-      DATABASE=dclmdb
-      PASSWORD=3WfJdR49r$TyPcUL
-      DB_USER=admin
-      POSTGRES_USER=admin
-      DB_SERVER=database
     action: 'Build services'
