@@ -2,7 +2,6 @@ trigger:
 - main
 
 
-
 steps:
   - task: DockerCompose@0
     inputs:
