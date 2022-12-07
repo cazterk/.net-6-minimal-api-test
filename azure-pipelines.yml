@@ -1,7 +1,13 @@
-- task: DockerCompose@0
-  inputs:
-    containerregistrytype: 'Azure Container Registry'
-    azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
-    azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
-    dockerComposeFile: '**/docker-compose.yml'
-    action: 'Build services'
+trigger:
+- main
+
+
+
+steps:
+  - task: DockerCompose@0
+    inputs:
+      containerregistrytype: 'Azure Container Registry'
+      azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
+      azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
+      dockerComposeFile: '**/docker-compose.yml'
+      action: 'Build services'
