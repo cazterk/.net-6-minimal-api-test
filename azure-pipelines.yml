@@ -6,6 +6,8 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
+  azureContainerRegistry: dclmchilangareg.azurecr.io
 
 steps:
   - task: DockerCompose@0
