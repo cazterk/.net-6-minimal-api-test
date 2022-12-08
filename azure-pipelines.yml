@@ -1,6 +1,11 @@
 trigger:
 - main
 
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
 
 steps:
   - task: DockerCompose@0
