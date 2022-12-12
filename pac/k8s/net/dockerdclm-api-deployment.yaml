@@ -31,5 +31,7 @@ spec:
           ports:
             - containerPort: 80
           resources: {}
+      selector:
+        io.kompose.service: dockerdclm-api
       restartPolicy: Always
 status: {}

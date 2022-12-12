@@ -40,6 +40,8 @@ spec:
             - mountPath: /var/lib/pgadmin
               name: pgadmin
       restartPolicy: Always
+      selector:
+        io.kompose.service: pgadmin
       volumes:
         - hostPath:
             path: /home/caz/Documents/dev/web/ChurchSystem-v1

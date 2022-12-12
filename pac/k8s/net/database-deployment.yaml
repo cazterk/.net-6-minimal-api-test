@@ -32,6 +32,8 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: db-volume
+      selector:
+        io.kompose.service: database
       restartPolicy: Always
       volumes:
         - hostPath:
