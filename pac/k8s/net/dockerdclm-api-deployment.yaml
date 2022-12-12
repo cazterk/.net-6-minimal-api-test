@@ -14,7 +14,8 @@ spec:
   replicas: 1
   strategy: {}
   selector:
-    io.kompose.service: dockerdclm-api
+    matchLabels:
+      app: dockerdclm-api
   template:
     metadata:
       creationTimestamp: null

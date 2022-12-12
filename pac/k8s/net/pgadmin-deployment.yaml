@@ -15,7 +15,8 @@ spec:
   strategy:
     type: Recreate
   selector:
-    io.kompose.service: pgadmin
+    matchLabels:
+      app: pgadmin
   template:
     metadata:
       creationTimestamp: null

@@ -15,7 +15,8 @@ spec:
   strategy:
     type: Recreate
   selector:
-    io.kompose.service: database
+    matchLabels:
+      app: database
   template:
     metadata:
       creationTimestamp: null
