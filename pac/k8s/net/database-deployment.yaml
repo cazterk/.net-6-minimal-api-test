@@ -1,8 +1,9 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert --file docker-compose.yml -o pac/k8s/net --volumes
+    kompose.cmd:
+      kompose convert --file docker-compose.yml -o pac/k8s/net --volumes
       hostPath
     kompose.version: 1.17.0 (HEAD)
   creationTimestamp: null
@@ -20,20 +21,20 @@ spec:
         io.kompose.service: database
     spec:
       containers:
-      - env:
-        - name: POSTGRES_PASSWORD
-        - name: POSTGRES_USER
-        image: postgres:latest
-        name: db
-        ports:
-        - containerPort: 5432
-        resources: {}
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: db-volume
+        - env:
+            - name: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+          image: postgres:latest
+          name: db
+          ports:
+            - containerPort: 5432
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: db-volume
       restartPolicy: Always
       volumes:
-      - hostPath:
-          path: /home/caz/Documents/dev/web/ChurchSystem-v1
-        name: db-volume
+        - hostPath:
+            path: /home/caz/Documents/dev/web/ChurchSystem-v1
+          name: db-volume
 status: {}

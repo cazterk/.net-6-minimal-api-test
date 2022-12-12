@@ -1,8 +1,9 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert --file docker-compose.yml -o pac/k8s/net --volumes
+    kompose.cmd:
+      kompose convert --file docker-compose.yml -o pac/k8s/net --volumes
       hostPath
     kompose.version: 1.17.0 (HEAD)
   creationTimestamp: null
@@ -20,27 +21,27 @@ spec:
         io.kompose.service: pgadmin
     spec:
       containers:
-      - env:
-        - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
-          value: "False"
-        - name: PGADMIN_CONFIG_SERVER_MODE
-          value: "False"
-        - name: PGADMIN_DEFAULT_EMAIL
-          value: pgadmin4@pgadmin.org
-        - name: PGADMIN_DEFAULT_PASSWORD
-        - name: PGADMIN_LISTEN_PORT
-          value: "5050"
-        image: dpage/pgadmin4:latest
-        name: pgadmin
-        ports:
-        - containerPort: 5050
-        resources: {}
-        volumeMounts:
-        - mountPath: /var/lib/pgadmin
+        - env:
+            - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+              value: "False"
+            - name: PGADMIN_CONFIG_SERVER_MODE
+              value: "False"
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: pgadmin4@pgadmin.org
+            - name: PGADMIN_DEFAULT_PASSWORD
+            - name: PGADMIN_LISTEN_PORT
+              value: "5050"
+          image: dpage/pgadmin4:latest
           name: pgadmin
+          ports:
+            - containerPort: 5050
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/pgadmin
+              name: pgadmin
       restartPolicy: Always
       volumes:
-      - hostPath:
-          path: /home/caz/Documents/dev/web/ChurchSystem-v1
-        name: pgadmin
+        - hostPath:
+            path: /home/caz/Documents/dev/web/ChurchSystem-v1
+          name: pgadmin
 status: {}
