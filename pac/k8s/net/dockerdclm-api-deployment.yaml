@@ -18,6 +18,8 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: dockerdclm-api
+  selector:
+        io.kompose.service: dockerdclm-api
     spec:
       containers:
         - env:
@@ -30,8 +32,6 @@ spec:
           name: dockerdclm-api
           ports:
             - containerPort: 80
-          resources: {}
-      selector:
-        io.kompose.service: dockerdclm-api
+          resources: {}      
       restartPolicy: Always
 status: {}

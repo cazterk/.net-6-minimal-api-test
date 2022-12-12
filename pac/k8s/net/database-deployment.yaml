@@ -19,6 +19,8 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: database
+  selector:
+        io.kompose.service: database
     spec:
       containers:
         - env:
@@ -32,8 +34,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: db-volume
-      selector:
-        io.kompose.service: database
+      
       restartPolicy: Always
       volumes:
         - hostPath:

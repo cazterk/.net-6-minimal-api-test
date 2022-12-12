@@ -19,6 +19,8 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: pgadmin
+  selector:
+        io.kompose.service: pgadmin
     spec:
       containers:
         - env:
@@ -40,8 +42,6 @@ spec:
             - mountPath: /var/lib/pgadmin
               name: pgadmin
       restartPolicy: Always
-      selector:
-        io.kompose.service: pgadmin
       volumes:
         - hostPath:
             path: /home/caz/Documents/dev/web/ChurchSystem-v1
