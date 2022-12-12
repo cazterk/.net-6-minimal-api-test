@@ -14,12 +14,12 @@ spec:
   replicas: 1
   strategy:
     type: Recreate
+  selector:
+    io.kompose.service: database
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: database
-  selector:
         io.kompose.service: database
     spec:
       containers:
@@ -34,7 +34,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: db-volume
-      
+
       restartPolicy: Always
       volumes:
         - hostPath:

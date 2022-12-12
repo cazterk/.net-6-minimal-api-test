@@ -14,12 +14,12 @@ spec:
   replicas: 1
   strategy:
     type: Recreate
+  selector:
+    io.kompose.service: pgadmin
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: pgadmin
-  selector:
         io.kompose.service: pgadmin
     spec:
       containers:

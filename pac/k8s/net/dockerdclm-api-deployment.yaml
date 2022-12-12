@@ -13,12 +13,12 @@ metadata:
 spec:
   replicas: 1
   strategy: {}
+  selector:
+    io.kompose.service: dockerdclm-api
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: dockerdclm-api
-  selector:
         io.kompose.service: dockerdclm-api
     spec:
       containers:
@@ -32,6 +32,6 @@ spec:
           name: dockerdclm-api
           ports:
             - containerPort: 80
-          resources: {}      
+          resources: {}
       restartPolicy: Always
 status: {}
