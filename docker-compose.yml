@@ -14,11 +14,11 @@ services:
     networks:
       - dclm-network
     environment:
-      DBServer: "${DBServer}"
-      DBPort: "${DB_PORT}"
-      Database: "${DATABASE}"
-      Password: "${PASSWORD}"
-      DBUser: "${DB_USER}"
+      DB_SERVER: "${DB_SERVER}"
+      DB_PORT: "${DB_PORT}"
+      DATABASE: "${DATABASE}"
+      PASSWORD: "${PASSWORD}"
+      DB_USER: "${DB_USER}"
     depends_on:
       - database
 
@@ -31,7 +31,7 @@ services:
     volumes:
       - db_volume:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: "${PASSWORD}"
     networks:
       - dclm-network
