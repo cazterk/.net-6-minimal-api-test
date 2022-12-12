@@ -9,12 +9,59 @@ variables:
   azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
   azureContainerRegistry: dclmchilangareg.azurecr.io
 
-steps:
- 
-- task: DockerCompose@0
-  inputs:
-    containerregistrytype: 'Azure Container Registry'
-    azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
-    azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
-    dockerComposeFile: '**/docker-compose.yml'
-    action: 'Build services'
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
+        azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
+        dockerComposeFile: '**/docker-compose.yml'
+        dockerComposeFileArgs: |
+          DB_SERVER:'$(DB_SERVER)'
+          DB_PORT:'$(DB_PORT)'
+          DATABASE:'$(DATABASE)'
+          PASSWORD:'$(PASSWORD)'
+          DB_USER:'$(DB_USER)'
+        action: 'Build services'
+
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscription: 'Azure subscription 1(48c0914b-0b56-47e1-9a27-6b17638b4f2b)'
+        azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
+        dockerComposeFile: '**/docker-compose.yml'
+        dockerComposeFileArgs: |
+          DB_SERVER:'$(DB_SERVER)'
+          DB_PORT:'$(DB_PORT)'
+          DATABASE:'$(DATABASE)'
+          PASSWORD:'$(PASSWORD)'
+          DB_USER:'$(DB_USER)'
+        action: 'Push services'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)/s/pac/k8s/net'
+        artifact: 'manifests'
+        publishLocation: 'pipeline'
+- stage: Deploy 
+  displayName: Deploy to dev
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    displayName: Deploy to AKS  
+    pool:
+      vmImage: ubuntu-latest
+    steps: 
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'manifests'
+        targetPath: '$(Pipeline.Workspace)/manifests'
