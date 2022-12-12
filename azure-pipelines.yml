@@ -17,8 +17,7 @@ stages:
     displayName: Build
     pool:
       vmImage: ubuntu-latest
-    steps:
-    
+    steps:    
     - task: DockerCompose@0
       inputs:
         containerregistrytype: 'Azure Container Registry'
@@ -32,7 +31,6 @@ stages:
           PASSWORD:'$(PASSWORD)'
           DB_USER:'$(DB_USER)'
         action: 'Build services'
-
     - task: DockerCompose@0
       inputs:
         containerregistrytype: 'Azure Container Registry'
@@ -51,9 +49,12 @@ stages:
         targetPath: '$(Pipeline.Workspace)/s/pac/k8s/net'
         artifact: 'manifests'
         publishLocation: 'pipeline'
+
 - stage: Deploy 
   displayName: Deploy to dev
   dependsOn: Build
+  variables:
+    acrsecret: k8sdclmacrauth
   jobs:
   - job: Deploy
     displayName: Deploy to AKS  
@@ -65,3 +66,23 @@ stages:
         buildType: 'current'
         artifactName: 'manifests'
         targetPath: '$(Pipeline.Workspace)/manifests'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'createSecret'
+        kubernetesServiceConnection: 'K8S_DCLM_Chilanga_Cluster'
+        namespace: 'default'
+        secretType: 'dockerRegistry'
+        secretName: '$(acrsecret)'
+        dockerRegistryEndpoint: 'K8SDCLMChilangaACR'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'K8S_DCLM_Chilanga_Cluster'
+        namespace: 'default'
+        manifests: 
+          $(Pipeline.Workspace)/manifests/database-deployment.yaml
+          $(Pipeline.Workspace)/manifests/database-service.yaml
+          $(Pipeline.Workspace)/manifests/dockerdclm-api-deployment.yaml
+          $(Pipeline.Workspace)/manifests/dockerdclm-api-service.yaml
+          $(Pipeline.Workspace)/manifests/pgadmin-deployment.yaml
+          $(Pipeline.Workspace)/manifests/pgadmin-service.yaml
