@@ -23,7 +23,7 @@ spec:
         - env:
             - name: DB_PORT
             - name: DB_SERVER
-            - name: DBUser
+            - name: DB_USER
             - name: DATABASE
             - name: PASSWORD
           image: caz-dev/church-system
