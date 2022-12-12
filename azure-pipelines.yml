@@ -25,11 +25,11 @@ stages:
         azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
         dockerComposeFile: '**/docker-compose.yml'
         dockerComposeFileArgs: |
-          'DB_SERVER='$(DB_SERVER)''
-          'DB_PORT='$(DB_PORT)''
-          'DATABASE='$(DATABASE)''
-          'PASSWORD='$(PASSWORD)''
-          'DB_USER='$(DB_USER)''
+          'DB_SERVER=$(DB_SERVER)'
+          'DB_PORT=$(DB_PORT)'
+          'DATABASE=$(DATABASE)'
+          'PASSWORD=$(PASSWORD)'
+          'DB_USER=$(DB_USER)'
         action: 'Build services'
     - task: DockerCompose@0
       inputs:
@@ -38,11 +38,11 @@ stages:
         azureContainerRegistry: '{"loginServer":"dclmchilangareg.azurecr.io", "id" : "/subscriptions/48c0914b-0b56-47e1-9a27-6b17638b4f2b/resourceGroups/cazAKSRG/providers/Microsoft.ContainerRegistry/registries/dclmChilangaReg"}'
         dockerComposeFile: '**/docker-compose.yml'
         dockerComposeFileArgs: |
-          'DB_SERVER='$(DB_SERVER)''
-          'DB_PORT='$(DB_PORT)''
-          'DATABASE='$(DATABASE)''
-          'PASSWORD='$(PASSWORD)''
-          'DB_USER='$(DB_USER)''
+          'DB_SERVER=$(DB_SERVER)'
+          'DB_PORT=$(DB_PORT)'
+          'DATABASE=$(DATABASE)'
+          'PASSWORD=$(PASSWORD)'
+          'DB_USER=$(DB_USER)'
         action: 'Push services'
     - task: PublishPipelineArtifact@1
       inputs:
@@ -79,7 +79,7 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'K8S_DCLM_Chilanga_Cluster'
         namespace: 'default'
-        manifests: 
+        manifests: |
           $(Pipeline.Workspace)/manifests/database-deployment.yaml
           $(Pipeline.Workspace)/manifests/database-service.yaml
           $(Pipeline.Workspace)/manifests/dockerdclm-api-deployment.yaml
