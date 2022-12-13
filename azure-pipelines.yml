@@ -86,4 +86,7 @@ stages:
           $(Pipeline.Workspace)/manifests/database-service.yaml          
           $(Pipeline.Workspace)/manifests/dockerdclm-api-service.yaml          
           $(Pipeline.Workspace)/manifests/pgadmin-service.yaml
+          $(Pipeline.Workspace)/manifests/db-volume-persistentvolumeclaim.yaml
+          $(Pipeline.Workspace)/manifests/dclm-network-networkpolicy.yaml          
+          $(Pipeline.Workspace)/manifests/pgadmin-persistentvolumeclaim.yaml
 
