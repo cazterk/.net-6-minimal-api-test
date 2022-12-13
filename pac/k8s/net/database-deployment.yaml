@@ -2,25 +2,27 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd:
-      kompose convert --file docker-compose.yml -o pac/k8s/net --volumes
-      hostPath
-    kompose.version: 1.17.0 (HEAD)
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose.yml -o pac/k8s/net
+    kompose.version: 1.27.0 (b0ed6a2c9)
   creationTimestamp: null
   labels:
     io.kompose.service: database
   name: database
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
-      app: database
+      io.kompose.service: database
+  strategy:
+    type: Recreate
   template:
     metadata:
+      annotations:
+        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose.yml -o pac/k8s/net
+        kompose.version: 1.27.0 (b0ed6a2c9)
       creationTimestamp: null
       labels:
+        io.kompose.network/dclm-network: "true"
         io.kompose.service: database
     spec:
       containers:
@@ -35,10 +37,9 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: db-volume
-
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /home/caz/Documents/dev/web/ChurchSystem-v1
-          name: db-volume
+        - name: db-volume
+          persistentVolumeClaim:
+            claimName: db-volume
 status: {}
