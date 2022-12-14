@@ -69,16 +69,16 @@ stages:
     - task: KubernetesManifest@0
       inputs:
         action: 'createSecret'
-        kubernetesServiceConnection: 'K8S_DCLM_Chilanga_Cluster'
-        namespace: 'default'
+        kubernetesServiceConnection: 'k8s-dclm-chilanga-cluster'
+        namespace: 'kube-public'
         secretType: 'dockerRegistry'
         secretName: '$(acrsecret)'
         dockerRegistryEndpoint: 'K8SDCLMChilangaACR'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
-        kubernetesServiceConnection: 'K8S_DCLM_Chilanga_Cluster'
-        namespace: 'default'
+        kubernetesServiceConnection: 'k8s-dclm-chilanga-cluster'
+        namespace: 'kube-public'
         manifests: |
           $(Pipeline.Workspace)/manifests/database-deployment.yaml
           $(Pipeline.Workspace)/manifests/dockerdclm-api-deployment.yaml
